@@ -12,7 +12,24 @@
     left:8px;
     top:8px;
     color:white;
+    z-index:5000;
+    height:700px;
+    width:1100px;
+}
+#carOverlay{
+    position: absolute;
+    left:350px;
+    top:549px;
+    z-index:10000;
+    height:174px;
+    width:409px;
+}
+#parent{
+    position: absolute;
+    left:8px;
+    top:8px;
     z-index:10000;
     height:700px;
     width:1100px;
+    background-color: transparent;
 }

@@ -88,6 +88,7 @@ function drawBackground(){
     drawRect(547,33,6, 6, "#FFFFFF")
     drawRect(753,33,6, 18, "#FFFFFF")
     drawRect(341,33,6, 18, "#FFFFFF")
+    // drawRect(400,670,300, 50, "#FFFFFF")
     drawRect(550+ (car.deltaX*100) - 3,39,6, 6, "#FFFFFF")
 
 }
@@ -95,7 +96,7 @@ function update(){
     car.x += car.deltaX*(car.speed/1.5)
 }
 var $mouseX=0
-$(scanlines).mousemove(function(e) {
+$(parentDiv).mousemove(function(e) {
     if(e.pageX > 750){
         car.deltaX = 2
     }
