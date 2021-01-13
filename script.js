@@ -8,31 +8,31 @@ var car = {
     deltaX: 0,
 }
 var path = {
-    x: 350,
-    curve: 10,
-    turn: 1,
-    arc: 15,
-    maxArc: 15,
+    x: 0,
+    curve: 0,
+    arc: 0,
+    maxArc: 0,
 }
 function drawRect(x,y,w,h,rgb){
     ctx.fillStyle = rgb
     ctx.fillRect(x, y, w, h);
 }
 function arc(){
-    if(path.arc!==path.maxArc){
+    if(path.arc > path.maxArc - 0.003 || path.arc < path.maxArc + 0.003){
         if(path.arc > path.maxArc){
-            path.arc -= 1
+            path.arc -= 0.003
         }
         else{
-            path.arc +=1
+            path.arc += 0.003
         }
     }
 }
 function generateWalls(){
+    
     var i = walls[0].length
     var n = 9
         while(i < n){
-            walls[0][i] = path.x
+            walls[0][i] = 350
             walls[1][i] = 600-(i*(600/n))
             i++
         }
@@ -51,7 +51,7 @@ function drawWalls(){
         if(walls[1][i] > 700){
             walls[0].splice(i,1)
             walls[1].splice(i,1)
-            arc()
+   
              if(path.curve < 0){
                 path.curve += 1
             }
@@ -60,19 +60,28 @@ function drawWalls(){
             }
             else if(path.curve === 0){
                 if((Math.random()-0.5>0)){
-                    console.log("turn")
-                    path.curve = -8*Math.floor(Math.random()*8)
-                    path.maxArc = Math.floor(Math.random*20)
+                    
+                    if(Math.random()-0.5>0){
+                        path.maxArc = 10+Math.floor(Math.random()*30)
+                        path.curve = Math.abs(path.maxArc) + Math.floor(Math.random()*20)
+                    }
+                    else{
+                        path.maxArc = -10-Math.floor(Math.random()*30)
+                        path.curve = Math.abs(path.maxArc) + Math.floor(Math.random()*20)
+                    }
                 }
                 else{
-                    console.log("straight")
-                    path.curve = 8*Math.floor(Math.random()*8)
+                    path.curve = Math.abs(path.maxArc)+Math.floor(Math.random()*20)
                     path.maxArc = 0
 
                 }
             }
+            
         }
+                 arc()
+        car.x -= (path.arc/200)*(car.speed/1.5)
         i++
+        
     }
 }
 function drawBackground(){
@@ -81,10 +90,10 @@ function drawBackground(){
 
 }
 function update(){
-    car.x += car.deltaX
+    car.x += car.deltaX*(car.speed/1.5)
 }
 var $mouseX=0
-$(canvas).mousemove(function(e) {
+$(scanlines).mousemove(function(e) {
         car.deltaX = -(350 -e.pageX)/100
     }
 );
@@ -92,23 +101,23 @@ document.addEventListener('keydown', keyPressed)
 function keyPressed(e){
     key = e.key
     if (key == "w") {
-        if(car.speed < 2.56){
-            car.speed += 0.08
+        if(car.speed < 3.6){
+            car.speed += 0.03
         }
         else{
-            car.speed = 2.56
+            car.speed = 3.6
         }
-        $("#speed").text(Math.round(car.speed * 100))
+        $("#speed").text(Math.floor(car.speed * 50))
     }
     else if (key == " " || key == "s") {
         e.preventDefault();
-        if(car.speed > 0.05){
-            car.speed -= 0.08
+        if(car.speed > 0.03){
+            car.speed -= 0.03
         }
         else{
             car.speed = 0
         }
-        $("#speed").text(Math.round(car.speed * 100))
+        $("#speed").text(Math.round(car.speed * 50))
     }
   }
 function game(){

@@ -8,3 +8,12 @@
     color:white;
     z-index:1000;
 }
+#scanlines{
+    position: absolute;
+    left:8px;
+    top:8px;
+    color:white;
+    z-index:10000;
+    height:700px;
+    width:700px;
+}
