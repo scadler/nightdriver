@@ -32,13 +32,13 @@ function generateWalls(){
     var i = walls[0].length
     var n = 9
         while(i < n){
-            walls[0][i] = 350
+            walls[0][i] = 550
             walls[1][i] = 600-(i*(600/n))
             i++
         }
 }
 function drawWalls(){
-    drawRect(0,0,canvas.height, canvas.width, "#000000")
+    drawRect(0,0,1100, 700, "#000000")
     var i = 0
     var scale = 600
     while(i < walls[0].length){
@@ -85,8 +85,10 @@ function drawWalls(){
     }
 }
 function drawBackground(){
-    drawRect(347,33,6, 6, "#FFFFFF")
-    drawRect(350+ (car.deltaX*100) - 3,39,6, 6, "#FFFFFF")
+    drawRect(547,33,6, 6, "#FFFFFF")
+    drawRect(753,33,6, 18, "#FFFFFF")
+    drawRect(341,33,6, 18, "#FFFFFF")
+    drawRect(550+ (car.deltaX*100) - 3,39,6, 6, "#FFFFFF")
 
 }
 function update(){
@@ -94,7 +96,15 @@ function update(){
 }
 var $mouseX=0
 $(scanlines).mousemove(function(e) {
-        car.deltaX = -(350 -e.pageX)/100
+    if(e.pageX > 750){
+        car.deltaX = 2
+    }
+    else if(e.pageX < 350){
+        car.deltaX = -2
+    }
+    else{
+        car.deltaX = -(550 -e.pageX)/100
+    }
     }
 );
 document.addEventListener('keydown', keyPressed)
