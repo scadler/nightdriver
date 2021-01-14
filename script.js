@@ -6,6 +6,8 @@ var car = {
     speed: 0,
     x: 0,
     deltaX: 0,
+    crashCooldown: 0,
+    score: 0,
 }
 var path = {
     x: 0,
@@ -20,19 +22,23 @@ function drawRect(x,y,w,h,rgb){
 function arc(){
     if(path.arc > path.maxArc - 0.003 || path.arc < path.maxArc + 0.003){
         if(path.arc > path.maxArc){
-            path.arc -= 0.003
+            path.arc -= 0.003*(car.speed/1.5)
         }
         else{
-            path.arc += 0.003
+            path.arc += 0.003*(car.speed/1.5)
         }
     }
 }
+function crash(){
+    car.speed = Math.floor(car.speed*(100-(5*car.speed/1)))/100
+    car.score -= 1
+    $("#speed").text(": "+Math.floor(car.speed * 50))
+}
 function generateWalls(){
-    
     var i = walls[0].length
     var n = 9
         while(i < n){
-            walls[0][i] = 550
+            walls[0][i] = 542
             walls[1][i] = 600-(i*(600/n))
             i++
         }
@@ -43,16 +49,23 @@ function drawWalls(){
     var scale = 600
     while(i < walls[0].length){
         width = 5 + (7 / (scale/walls[1][i]))
-        leftx = (walls[0][i] + car.x + path.arc*Math.pow(2, (600-walls[1][i])/150)) - (300 / (scale/walls[1][i])) + width
-        rightx = (walls[0][i] + car.x + path.arc*Math.pow(2, (600-walls[1][i])/150)) + (300 / (scale/walls[1][i]))
+        leftx = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-walls[1][i])/150)) - (300 / (scale/walls[1][i])) + width
+        rightx = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-walls[1][i])/150)) + (300 / (scale/walls[1][i]))
+        if(walls[1][i] > 570 && car.crashCooldown < 0){
+            if(rightx < 700 || leftx > 390){
+                crash()
+                car.crashCooldown = 300
+            }
+        }
         drawRect(leftx,walls[1][i], width, width*2, "#FFFFFF")
         drawRect(rightx,walls[1][i], width, width*2, "#FFFFFF")
         walls[1][i]+= car.speed
         if(walls[1][i] > 700){
+            car.score += 1/3
+            $("#score").text(": "+Math.floor(car.score))
             walls[0].splice(i,1)
             walls[1].splice(i,1)
-   
-             if(path.curve < 0){
+            if(path.curve < 0){
                 path.curve += 1
             }
             else if(path.curve > 0){
@@ -78,9 +91,11 @@ function drawWalls(){
             }
             
         }
-                 arc()
+        
+        arc()
         car.x -= (path.arc/200)*(car.speed/1.5)
         i++
+        car.crashCooldown -= 1
         
     }
 }
@@ -93,7 +108,7 @@ function drawBackground(){
 
 }
 function update(){
-    car.x += car.deltaX*(car.speed/1.5)
+    car.x -= car.deltaX*(car.speed/1.5)
 }
 var $mouseX=0
 $(parentDiv).mousemove(function(e) {
@@ -112,13 +127,13 @@ document.addEventListener('keydown', keyPressed)
 function keyPressed(e){
     key = e.key
     if (key == "w") {
-        if(car.speed < 3.6){
+        if(car.speed < 6){
             car.speed += 0.03
         }
         else{
-            car.speed = 3.6
+            car.speed = 6
         }
-        $("#speed").text(Math.floor(car.speed * 50))
+        $("#speed").text(": "+Math.floor(car.speed * 50))
     }
     else if (key == " " || key == "s") {
         e.preventDefault();
@@ -128,7 +143,7 @@ function keyPressed(e){
         else{
             car.speed = 0
         }
-        $("#speed").text(Math.round(car.speed * 50))
+        $("#speed").text(": "+Math.round(car.speed * 50))
     }
   }
 function game(){
@@ -137,5 +152,7 @@ function game(){
     drawBackground()
     update()
 }
-
+setInterval(function(){ 
+    
+}, 1000);
 setInterval(game,)

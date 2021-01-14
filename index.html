@@ -1,11 +1,16 @@
 <html>
     <head>
         <link type="text/css" rel="stylesheet" href="style.css">
+        <link href="//db.onlinewebfonts.com/c/47b88958a4f9f4e8439a23651ddb22d5?family=SGK075" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <div id="parentDiv">
             <canvas id="canvas" height="700" width="1100" onkeypress="keyPressed(e)"> </canvas>
-            <div><p><span id="speed">0</span> mph</p></div>
+            <div id="stats">
+                <p class="numbers" id="pSpeed">SPEED <span id="speed">: 0</span></p>
+                <p class="numbers" id="pScore">SCORE <span id="score">: 0</span></p>
+                <!-- <p class="numbers" id="pTime">TIME <span id="time">: 0</span></p> -->
+            </div>
             <img id="scanlines" src="https://retropie.org.uk/forum/assets/uploads/files/1570133726433-scanlines-50-no-gray-frame.png">
             <img id="carOverlay" src="https://atariage.com/forums/uploads/monthly_06_2013/post-35525-0-50481600-1370218845.png">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
