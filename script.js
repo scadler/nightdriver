@@ -2,6 +2,10 @@ const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 var ctx = canvas.getContext('2d');
 var walls = [[],[]]
+var system = {
+    time: 90,
+    gameOver: false,
+}
 var car = {
     speed: 0,
     x: 0,
@@ -22,10 +26,10 @@ function drawRect(x,y,w,h,rgb){
 function arc(){
     if(path.arc > path.maxArc - 0.003 || path.arc < path.maxArc + 0.003){
         if(path.arc > path.maxArc){
-            path.arc -= 0.003*(car.speed/1.5)
+            path.arc -= 0.003*(car.speed*0.7)
         }
         else{
-            path.arc += 0.003*(car.speed/1.5)
+            path.arc += 0.003*(car.speed*0.7)
         }
     }
 }
@@ -39,7 +43,7 @@ function generateWalls(){
     var n = 9
         while(i < n){
             walls[0][i] = 542
-            walls[1][i] = 600-(i*(600/n))
+            walls[1][i] = 700-(i*(600/n))
             i++
         }
 }
@@ -73,7 +77,6 @@ function drawWalls(){
             }
             else if(path.curve === 0){
                 if((Math.random()-0.5>0)){
-                    
                     if(Math.random()-0.5>0){
                         path.maxArc = 10+Math.floor(Math.random()*30)
                         path.curve = Math.abs(path.maxArc) + Math.floor(Math.random()*20)
@@ -86,14 +89,11 @@ function drawWalls(){
                 else{
                     path.curve = Math.abs(path.maxArc)+Math.floor(Math.random()*20)
                     path.maxArc = 0
-
                 }
-            }
-            
-        }
-        
+            }  
+        }    
         arc()
-        car.x -= (path.arc/200)*(car.speed/1.5)
+        car.x -= (path.arc/200)*(car.speed*0.6)
         i++
         car.crashCooldown -= 1
         
@@ -103,9 +103,7 @@ function drawBackground(){
     drawRect(547,33,6, 6, "#FFFFFF")
     drawRect(753,33,6, 18, "#FFFFFF")
     drawRect(341,33,6, 18, "#FFFFFF")
-    // drawRect(400,670,300, 50, "#FFFFFF")
     drawRect(550+ (car.deltaX*100) - 3,39,6, 6, "#FFFFFF")
-
 }
 function update(){
     car.x -= car.deltaX*(car.speed/1.5)
@@ -121,12 +119,11 @@ $(parentDiv).mousemove(function(e) {
     else{
         car.deltaX = -(550 -e.pageX)/100
     }
-    }
-);
+});
 document.addEventListener('keydown', keyPressed)
 function keyPressed(e){
     key = e.key
-    if (key == "w") {
+    if (key == "w" && !system.gameOver) {
         if(car.speed < 6){
             car.speed += 0.03
         }
@@ -135,7 +132,7 @@ function keyPressed(e){
         }
         $("#speed").text(": "+Math.floor(car.speed * 50))
     }
-    else if (key == " " || key == "s") {
+    else if ((key == " " || key == "s") && !system.gameOver) {
         e.preventDefault();
         if(car.speed > 0.03){
             car.speed -= 0.03
@@ -145,14 +142,27 @@ function keyPressed(e){
         }
         $("#speed").text(": "+Math.round(car.speed * 50))
     }
-  }
-function game(){
-    generateWalls()
-    drawWalls()
-    drawBackground()
-    update()
 }
-setInterval(function(){ 
-    
-}, 1000);
+function game(){
+    if(!system.gameOver){
+        generateWalls()
+        drawWalls()
+        drawBackground()
+        update()
+    }
+}
+function gameOver(){
+    system.gameOver = true
+}
+function clock(){
+    if(system.time >= 1){
+        system.time -=1
+        $("#time").text(": "+system.time)
+        if(system.time === 0 && !system.gameOver){
+            gameOver()
+        }
+        setTimeout(clock, 1000);
+    }
+}
 setInterval(game,)
+clock() /*make this function run only once game has started*/

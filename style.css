@@ -5,8 +5,7 @@
     position: absolute;
 }
 .numbers{
-    left:30px;
-    top:-20px;
+    top: 0px;
     position: absolute;
     height:40px;
     width: 200px;
@@ -14,27 +13,23 @@
     z-index:1000;
     display:flex;
     justify-content: flex-start;
+    font-size:40px;
+    color:white;
+    z-index:1000;
+    font-family: 'SGK075', cursive;
 }
 #pSpeed{
-    font-size:40px;
-    color:white;
-    z-index:1000;
-    font-family: 'SGK075', cursive;
+    top: -11px;
+    left:40px
 }
 #pScore{
+    top: -11;
     left:200px;
-    font-size:40px;
-    color:white;
-    z-index:1000;
-    font-family: 'SGK075', cursive;
 }
-/* #pTime{
-    right:200px;
-    font-size:40px;
-    color:white;
-    z-index:1000;
-    font-family: 'SGK075', cursive;
-} */
+#pTime{
+    top: -12px;
+    left: 800px;
+}
 #scanlines{
     position: absolute;
     left:8px;
