@@ -19,15 +19,15 @@
     font-family: 'SGK075', cursive;
 }
 #pSpeed{
-    top: -11px;
+    top: -33px;
     left:40px
 }
 #pScore{
     top: -11;
-    left:200px;
+    left:40px;
 }
 #pTime{
-    top: -12px;
+    top: -11px;
     left: 800px;
 }
 #scanlines{

@@ -35,7 +35,7 @@ function arc(){
 }
 function crash(){
     car.speed = Math.floor(car.speed*(100-(5*car.speed/1)))/100
-    car.score -= 1
+    car.score = (Math.floor(car.score - (1.5*car.speed)) > 0) ? (Math.floor(car.score - (1.5*car.speed))): 0
     $("#speed").text(": "+Math.floor(car.speed * 50))
 }
 function generateWalls(){
@@ -65,7 +65,7 @@ function drawWalls(){
         drawRect(rightx,walls[1][i], width, width*2, "#FFFFFF")
         walls[1][i]+= car.speed
         if(walls[1][i] > 700){
-            car.score += 1/3
+            car.score += 1/3 +(Math.floor(car.speed*3)/30)
             $("#score").text(": "+Math.floor(car.score))
             walls[0].splice(i,1)
             walls[1].splice(i,1)
