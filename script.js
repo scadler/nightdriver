@@ -38,6 +38,74 @@ function crash(){
     car.score = (Math.floor(car.score - (1.5*car.speed)) > 0) ? (Math.floor(car.score - (1.5*car.speed))): 0
     $("#speed").text(": "+Math.floor(car.speed * 50))
 }
+function returnX(i){
+    XL = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-walls[1][i])/150)) - (300 / (600/walls[1][i])) + 5 + (7 / (600/walls[1][i]))
+    XR = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-walls[1][i])/150)) + (300 / (600/walls[1][i]))
+    top = (166.666 + car.x - path.arc*Math.pow(2, (600-166.666)/150)) - (300 / (600/166.666)) + 5 + (7 / (600/166.666))
+    // bottom = (166.666 + car.x - path.arc*Math.pow(2, (600-700)/150)) - (300 / (600/700)) + 5 + (7 / (600/700))
+    return [XL, XR]
+}
+function returnMaxMin(i){
+    maxXL = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-166)/150)) - (300 / (600/166)) + 5 + (7 / (600/166))
+    maxXR = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-166)/150)) + (300 / (600/166))
+    minXL = (walls[0][i] + car.x - path.arc*Math.pow(2, (-100)/150)) - (300 / (6/7)) + 5 + (7 / (6/7))
+    minXR = (walls[0][i] + car.x - path.arc*Math.pow(2, (-100)/150)) + (300 / (6/7))
+    // bottom = (166.666 + car.x - path.arc*Math.pow(2, (600-700)/150)) - (300 / (600/700)) + 5 + (7 / (600/700))
+    return [maxXL, maxXR, minXL, minXR]
+}
+function drawWall(){
+    ctx.lineWidth = 5 + (21 / (600/walls[1][i]))
+    ctx.strokeStyle = "#FFFFFF"
+    var i=0
+    while(i < walls[0].length){
+        let x = returnX(i)
+        let xNext = returnX(i+1)
+            ctx.beginPath()
+            ctx.lineTo(x[0],walls[1][i])
+            ctx.lineTo(xNext[0],walls[1][i+1])
+            ctx.stroke()
+            ctx.beginPath()
+            ctx.lineTo(x[1],walls[1][i])
+            ctx.lineTo(xNext[1],walls[1][i+1])
+            ctx.stroke()
+            // if(i=== (2,4)){
+            // ctx.beginPath()
+            // ctx.lineTo((x[0]+x[1])/2,walls[1][i])
+            // ctx.lineTo((xNext[0]+xNext[1])/2,walls[1][i+1])
+            // ctx.stroke()
+            // }
+        i++
+    } 
+}
+function smoothWall(){
+    ctx.lineWidth = 1
+    ctx.strokeStyle = "#FFFFFF"
+        let x = returnX(8)
+        let xx = returnX(0)
+        let xM = returnMaxMin(8)
+            ctx.beginPath()
+            ctx.lineTo(xM[0],166)
+            ctx.lineTo(x[0],walls[1][8])
+            ctx.stroke()
+            ctx.beginPath()
+            ctx.lineTo(xM[1],166)
+            ctx.lineTo(x[1],walls[1][8])
+            ctx.stroke()
+            ctx.beginPath()
+            ctx.lineTo(xM[2],700)
+            ctx.lineTo(xx[0],walls[1][0])
+            ctx.stroke()
+            ctx.beginPath()
+            ctx.lineTo(xM[3],700)
+            ctx.lineTo(xx[1],walls[1][0])
+            ctx.stroke()
+            // if(i=== (2,4)){
+            // ctx.beginPath()
+            // ctx.lineTo((x[0]+x[1])/2,walls[1][i])
+            // ctx.lineTo((xNext[0]+xNext[1])/2,walls[1][i+1])
+            // ctx.stroke()
+            // }
+}
 function generateWalls(){
     var i = walls[0].length
     var n = 9
@@ -61,8 +129,8 @@ function drawWalls(){
                 car.crashCooldown = 300
             }
         }
-        drawRect(leftx,walls[1][i], width, width*2, "#FFFFFF")
-        drawRect(rightx,walls[1][i], width, width*2, "#FFFFFF")
+        // drawRect(leftx,walls[1][i], width, width*2, "#FFFFFF")
+        // drawRect(rightx,walls[1][i], width, width*2, "#FFFFFF")
         walls[1][i]+= car.speed
         if(walls[1][i] > 700){
             car.score += 1/3 +(Math.floor(car.speed*3)/30)
@@ -149,6 +217,8 @@ function game(){
         drawWalls()
         drawBackground()
         update()
+        drawWall()
+        smoothWall()
     }
 }
 function gameOver(){
