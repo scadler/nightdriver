@@ -12,6 +12,7 @@ var car = {
     deltaX: 0,
     crashCooldown: 0,
     score: 0,
+    xx: 0,
 }
 var path = {
     x: 0,
@@ -38,26 +39,37 @@ function crash(){
     car.score = (Math.floor(car.score - (1.5*car.speed)) > 0) ? (Math.floor(car.score - (1.5*car.speed))): 0
     $("#speed").text(": "+Math.floor(car.speed * 50))
 }
+function generateWalls(){
+    var i = walls[0].length
+    var n = 20
+        while(i < n){
+            walls[0][i] = 542
+            walls[1][i] = 700-(i*(600/n))
+            i++
+        }
+}
 function returnX(i){
     XL = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-walls[1][i])/150)) - (300 / (600/walls[1][i])) + 5 + (7 / (600/walls[1][i]))
     XR = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-walls[1][i])/150)) + (300 / (600/walls[1][i]))
-    top = (166.666 + car.x - path.arc*Math.pow(2, (600-166.666)/150)) - (300 / (600/166.666)) + 5 + (7 / (600/166.666))
     // bottom = (166.666 + car.x - path.arc*Math.pow(2, (600-700)/150)) - (300 / (600/700)) + 5 + (7 / (600/700))
     return [XL, XR]
 }
 function returnMaxMin(i){
-    maxXL = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-166)/150)) - (300 / (600/166)) + 5 + (7 / (600/166))
-    maxXR = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-166)/150)) + (300 / (600/166))
-    minXL = (walls[0][i] + car.x - path.arc*Math.pow(2, (-100)/150)) - (300 / (6/7)) + 5 + (7 / (6/7))
-    minXR = (walls[0][i] + car.x - path.arc*Math.pow(2, (-100)/150)) + (300 / (6/7))
-    // bottom = (166.666 + car.x - path.arc*Math.pow(2, (600-700)/150)) - (300 / (600/700)) + 5 + (7 / (600/700))
+    n = 20
+    min = 700-((n-1)*(600/n))
+    max = 700-(0*(600/n))
+    maxXL = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-min)/150)) - (300 / (600/min)) + 5 + (7 / (600/min))
+    maxXR = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-min)/150)) + (300 / (600/min))
+    minXL = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-max)/150)) - (300 / (600/max)) + 5 + (7 / (600/max))
+    minXR = (walls[0][i] + car.x - path.arc*Math.pow(2, (600-max)/150)) + (300 / (600/max))
     return [maxXL, maxXR, minXL, minXR]
 }
 function drawWall(){
-    ctx.lineWidth = 5 + (21 / (600/walls[1][i]))
+    smoothWall()
     ctx.strokeStyle = "#FFFFFF"
     var i=0
     while(i < walls[0].length){
+        ctx.lineWidth = 2
         let x = returnX(i)
         let xNext = returnX(i+1)
             ctx.beginPath()
@@ -68,53 +80,40 @@ function drawWall(){
             ctx.lineTo(x[1],walls[1][i])
             ctx.lineTo(xNext[1],walls[1][i+1])
             ctx.stroke()
-            // if(i=== (2,4)){
-            // ctx.beginPath()
-            // ctx.lineTo((x[0]+x[1])/2,walls[1][i])
-            // ctx.lineTo((xNext[0]+xNext[1])/2,walls[1][i+1])
-            // ctx.stroke()
-            // }
         i++
     } 
 }
 function smoothWall(){
-    ctx.lineWidth = 1
+    n = 20
+    minY = 700-(0*(600/n))
+    maxY = 700-((n-1)*(600/n))
+ctx.lineWidth = 2
     ctx.strokeStyle = "#FFFFFF"
-        let x = returnX(8)
+    if(walls[0][n-1]){
+        car.xx = returnX(n-1)
+    }
+    let x = car.xx
         let xx = returnX(0)
-        let xM = returnMaxMin(8)
+        let xM = returnMaxMin(n-1)
+        console.log(Math.ceil((x[0]+x[1])/100000))
             ctx.beginPath()
-            ctx.lineTo(xM[0],166)
-            ctx.lineTo(x[0],walls[1][8])
+            ctx.lineTo(xM[0],maxY)
+            ctx.lineTo(x[0],walls[1][n-1])
             ctx.stroke()
             ctx.beginPath()
-            ctx.lineTo(xM[1],166)
-            ctx.lineTo(x[1],walls[1][8])
+            ctx.lineTo(xM[1],maxY)
+            ctx.lineTo(x[1],walls[1][n-1])
             ctx.stroke()
             ctx.beginPath()
-            ctx.lineTo(xM[2],700)
+            ctx.lineTo(xM[2],minY)
             ctx.lineTo(xx[0],walls[1][0])
             ctx.stroke()
             ctx.beginPath()
-            ctx.lineTo(xM[3],700)
+            ctx.lineTo(xM[3],minY)
             ctx.lineTo(xx[1],walls[1][0])
             ctx.stroke()
-            // if(i=== (2,4)){
-            // ctx.beginPath()
-            // ctx.lineTo((x[0]+x[1])/2,walls[1][i])
-            // ctx.lineTo((xNext[0]+xNext[1])/2,walls[1][i+1])
-            // ctx.stroke()
-            // }
 }
-function generateWalls(){
-    var i = walls[0].length
-    var n = 9
-        while(i < n){
-            walls[0][i] = 542
-            walls[1][i] = 700-(i*(600/n))
-            i++
-        }
-}
+
 function drawWalls(){
     drawRect(0,0,1100, 700, "#000000")
     var i = 0
@@ -129,8 +128,6 @@ function drawWalls(){
                 car.crashCooldown = 300
             }
         }
-        // drawRect(leftx,walls[1][i], width, width*2, "#FFFFFF")
-        // drawRect(rightx,walls[1][i], width, width*2, "#FFFFFF")
         walls[1][i]+= car.speed
         if(walls[1][i] > 700){
             car.score += 1/3 +(Math.floor(car.speed*3)/30)
@@ -161,10 +158,9 @@ function drawWalls(){
             }  
         }    
         arc()
-        car.x -= (path.arc/200)*(car.speed*0.6)
+        car.x -= (path.arc/400)*(car.speed*0.6)
         i++
         car.crashCooldown -= 1
-        
     }
 }
 function drawBackground(){
